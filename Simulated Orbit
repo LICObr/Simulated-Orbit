@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <math.h>
+
+#define G 6.67430e-11 // Constante gravitacional
+
+// Função para calcular a força gravitacional
+double calcular_forca_gravitacional(double massa_estrela, double massa_planeta, double distancia) {
+    return (G * massa_estrela * massa_planeta) / (distancia * distancia);
+}
+
+// Função para atualizar a posição do planeta
+void atualizar_posicao(double *x, double *y, double *vx, double *vy, double ax, double ay, double dt) {
+    *vx += ax * dt;
+    *vy += ay * dt;
+    *x += *vx * dt;
+    *y += *vy * dt;
+}
+
+int main() {
+    double massa_estrela, massa_planeta;
+    double x, y, vx, vy, ax, ay, dt, distancia, forca, aceleracao;
+
+    // Leitura das massas
+    printf("Digite a massa da estrela (kg): ");
+    scanf("%lf", &massa_estrela);
+    printf("Digite a massa do planeta (kg): ");
+    scanf("%lf", &massa_planeta);
+
+    // Posição inicial do planeta (orbita circular simplificada)
+    printf("Digite a posição inicial x do planeta (metros): ");
+    scanf("%lf", &x);
+    printf("Digite a posição inicial y do planeta (metros): ");
+    scanf("%lf", &y);
+
+    // Velocidade inicial do planeta (orbita circular)
+    printf("Digite a velocidade inicial em x do planeta (m/s): ");
+    scanf("%lf", &vx);
+    printf("Digite a velocidade inicial em y do planeta (m/s): ");
+    scanf("%lf", &vy);
+
+    // Passo de tempo
+    printf("Digite o intervalo de tempo para cada passo (s): ");
+    scanf("%lf", &dt);
+
+    // Simulação da órbita
+    for (int i = 0; i < 10000; i++) { // Executa por 10000 iterações
+        distancia = sqrt(x * x + y * y); // Distância do planeta à estrela
+        forca = calcular_forca_gravitacional(massa_estrela, massa_planeta, distancia); // Calcula a força gravitacional
+        aceleracao = forca / massa_planeta; // Calcula a aceleração do planeta
+
+        // Calcula componentes da aceleração
+        ax = -aceleracao * (x / distancia);
+        ay = -aceleracao * (y / distancia);
+
+        // Atualiza a posição e velocidade do planeta
+        atualizar_posicao(&x, &y, &vx, &vy, ax, ay, dt);
+
+        // Imprime a posição atual do planeta
+        printf("Posição do planeta em t = %.2f s -> x: %.2f m, y: %.2f m\n", i * dt, x, y);
+    }
+
+    return 0;
+}
